@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "./api/auth/[...nextauth]/options"
 import { getBusinessByOwner } from "@/services/businessServices";
 
+
 const page = async () => {
   const session = await getServerSession(authOptions)
   const business = await getBusinessByOwner(session?.user?.id)
