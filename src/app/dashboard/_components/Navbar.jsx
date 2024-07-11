@@ -1,14 +1,23 @@
 "use client"
 import React from "react"
 import Link from "next/link"
-import { Compass, BarChart2, Gift, LogOut } from "lucide-react"
+import { Compass, BarChart2, Gift, LogOut, Menu } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useAuth } from "@/hooks/useAuth"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { signOut } from "next-auth/react"
 import { usePathname } from "next/navigation"
-
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
 
 const NavItem = ({ href, icon: Icon, children }) => {
   const pathname = usePathname()
@@ -31,12 +40,13 @@ const NavItem = ({ href, icon: Icon, children }) => {
 
 const Navbar = ({ children }) => {
   const { user } = useAuth()
+  const [open, setOpen] = React.useState(false)
   const handleSignout = () => {
     signOut({ callbackUrl: "/" })
   }
   return (
     <div className='flex h-screen bg-gray-100 w-full'>
-      <nav className='w-64 bg-white border-r flex flex-col'>
+      <nav className='w-64 bg-white border-r  flex-col hidden md:flex'>
         <div className='p-6'>
           <Link href='/dashboard' className='text-2xl font-bold'>
             TOKI
@@ -74,7 +84,31 @@ const Navbar = ({ children }) => {
           </div>
         </div>
       </nav>
-      <main className='flex-1 overflow-y-auto p-6 w-full'>{children}</main>
+      <nav className="fixed  top-0 left-0 right-0 px-4 py-3 flex md:hidden justify-between bg-white"  >
+      <Link href='/dashboard' className='text-2xl font-bold'>
+            TOKI
+          </Link>
+          <Menu onClick={()=>setOpen((prev)=>!prev)}/>
+      </nav>
+      <Drawer open={open} onOpenChange={setOpen}>
+  <DrawerContent>
+    <DrawerHeader>
+      <DrawerTitle className='text-gray-500'>Menu</DrawerTitle>
+    </DrawerHeader>
+    <div className='mt-6 flex gap-1 flex-col flex-grow px-5 pb-10'>
+          <NavItem href='/dashboard/discover' icon={Compass}>
+            Discover
+          </NavItem>
+          <NavItem href='/dashboard/manage-perks' icon={Gift}>
+            Manage perks
+          </NavItem>
+          <NavItem href='/dashboard' icon={BarChart2}>
+            Profile
+          </NavItem>
+        </div>
+  </DrawerContent>
+</Drawer>
+      <main className='flex-1 mt-14  md:mt-0 overflow-y-auto md:p-6 w-full'>{children}</main>
     </div>
   )
 }

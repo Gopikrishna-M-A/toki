@@ -158,23 +158,23 @@ const Form = () => {
   }
   return (
     <div
-      className='min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4 bg-contain bg-center bg-no-repeat'
+      className='min-h-screen bg-white md:bg-gray-100 flex flex-col items-center justify-center p-4 bg-contain bg-center bg-no-repeat'
       style={{
         backgroundImage: "url('/images/home/logovector.png')",
         backgroundAttachment: "fixed",
       }}>
       <div className='w-full z-10 relative'>
-        <div className='flex justify-center items-center gap-4 mb-8'>
+        <div className='flex justify-start md:justify-center items-center gap-4 mb-8'>
           <Image
             src='/images/home/vector-black.png'
             width={43}
             height={43}
             alt='logo'
           />
-          <h1 className='text-4xl font-bold'>TOKI</h1>
+          <h1 className='text-4xl font-bold tracking-[.25em]'>TOKI</h1>
         </div>
 
-        <div className='max-w-4xl w-full bg-white rounded-lg mx-auto shadow-lg px-5 py-10 flex flex-col gap-5'>
+        <div className='max-w-4xl w-full bg-white rounded-lg mx-auto md:shadow-lg md:px-5 md:py-10 flex flex-col gap-5'>
           <div className='grid w-full items-center gap-1.5'>
             <Label htmlFor='name'>Is this your business?</Label>
             <Input

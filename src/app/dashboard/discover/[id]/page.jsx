@@ -1,5 +1,6 @@
 import React from 'react'
 import Partner from '../_components/Partner'
+import PartnerMobile from '../_components/PartnerMobile'
 import { getPerksByBusinessId } from '@/services/perkServices'
 import { getBusiness } from '@/services/businessServices'
 const page = async ({params}) => {
@@ -8,6 +9,7 @@ const page = async ({params}) => {
   return (
     <div className='h-full'>
         <Partner business={business} perks={perks}/>
+        <PartnerMobile business={business} perks={perks}/>
     </div>
   )
 }

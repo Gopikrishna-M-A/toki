@@ -18,7 +18,7 @@ const ManagePerk = ({ perks }) => {
   }
 
   return (
-    <div className='w-full h-full flex gap-7 flex-col'>
+    <div className='w-full h-full flex gap-7 flex-col bg-white md:bg-gray-100'>
       <div>
         <div className='flex justify-between items-center'>
          <Link href='/dashboard/discover'>
@@ -26,7 +26,7 @@ const ManagePerk = ({ perks }) => {
             <ChevronLeft className='mr-2 h-4 w-4' /> Manage Perks
           </Button>
           </Link>
-          <Link href='/dashboard/manage-perks/createperks'>
+          <Link className="hidden md:block" href='/dashboard/manage-perks/createperks'>
           <Button variant='outline'>
             Create new perk
           <Plus className='ml-2 h-4 w-4' />
@@ -35,10 +35,10 @@ const ManagePerk = ({ perks }) => {
       </div>
 
       <div className='w-full h-full gap-4'>
-        <div className='bg-white rounded-lg py-10 px-5 '>
-          <div className='flex justify-between'>
-            <h1 className='text-lg font-light'>Perks</h1>
-            <div className='flex items-center space-x-4'>
+        <div className='bg-white rounded-lg  pt-0 md:py-10 px-5 '>
+          <div className='flex justify-center md:justify-between'>
+            <h1 className='text-lg font-light '>Perks</h1>
+            <div className='md:flex items-center space-x-4 hidden '>
               <button
                 onClick={handlePrevPage}
                 disabled={currentPage === 1}
@@ -56,7 +56,7 @@ const ManagePerk = ({ perks }) => {
               </button>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-2 mt-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-5">
             {
                 perks.map((perk,index) => (
                     <PerkCard key={index} perk={perk} />

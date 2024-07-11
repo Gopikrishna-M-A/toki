@@ -18,7 +18,7 @@ const Partner = ({ business, perks }) => {
   }
   const mapUri = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=place_id:${business.placeId}`;
   return (
-    <div className='w-full h-full flex gap-7 flex-col'>
+    <div className='w-full h-full hidden md:flex gap-7 flex-col'>
       <div>
         <div className='flex justify-between items-center'>
           <Button variant='ghost'>

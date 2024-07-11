@@ -4,7 +4,7 @@ import { getAllBusiness } from '@/services/businessServices'
 const page = async () => {
   const businesses = await getAllBusiness()
   return (
-    <div>
+    <div className='h-full'>
         <Discover businesses={businesses}/>
     </div>
   )

@@ -16,17 +16,17 @@ const DiscoverCard = ({ partner }) => {
             alt={partner.name}
             width={400}
             height={200}
-            className='w-full h-40 object-cover rounded-lg'
+            className='w-full h-28 md:h-40 object-cover rounded-lg'
           />
         <CardHeader className='p-4'>
           <div className='flex justify-between items-center'>
             <h2 className='text-base font-semibold'>{partner.name}</h2>
-            <span className='text-xs text-blue-600 bg-blue-100 font-medium px-2 rounded-full'>
+            <span className='text-xs hidden md:block text-blue-600 bg-blue-100 font-medium px-2 rounded-full'>
               {partner.types[0]}
             </span>
           </div>
         </CardHeader>
-        <CardContent className='p-4 pt-0'>
+        <CardContent className='p-4 pt-0 hidden md:block'>
           <p className='text-sm text-gray-700 mb-2 font-light line-clamp-2'>
             {partner.description}
           </p>

@@ -118,10 +118,10 @@ const DiscoverPartners = ({ businesses }) => {
   };
 
   return (
-    <div className="p-4 bg-white rounded-md">
-      <div className="flex justify-between items-center mb-4">
+    <div className="p-4 bg-white rounded-md h-full">
+      <div className="flex justify-center md:justify-between items-center mb-4">
         <h1 className="text-lg font-light">Discover partners</h1>
-        <div className="flex items-center space-x-4">
+        <div className="md:flex items-center space-x-4 hidden">
           <button
             onClick={handlePrevPage}
             disabled={currentPage === 1}
@@ -141,7 +141,7 @@ const DiscoverPartners = ({ businesses }) => {
           </button>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         {businesses.map((partner,index) => (
           <DiscoverCard key={index} partner={partner}/>
         ))}

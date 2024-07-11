@@ -7,7 +7,7 @@ const page = async () => {
   const session = await getServerSession(authOptions)
   const business = await getBusinessByOwner(session?.user?.id)
   return (
-    <div>
+    <div className='h-full'>
       <BusinessProfile  business={business}/>
     </div>
   )

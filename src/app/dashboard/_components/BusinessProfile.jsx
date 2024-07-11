@@ -8,8 +8,8 @@ import { MapPin, Phone, Mail, Star, Link, Globe } from "lucide-react";
 const BusinessProfile = ({ business }) => {
   console.log(business.images[0]);
   return (
-    <div className="container mx-auto p-4">
-      <Card className="w-full max-w-3xl mx-auto">
+    <div className="container mx-auto md:p-4 bg-white md:bg-gray-100 h-full">
+      <Card className="w-full max-w-3xl mx-auto border-none  shadow-none md:shadow-sm md:border">
         <CardHeader className="flex flex-row items-center space-x-4 pb-4">
           <Avatar className="w-20 h-20">
             <AvatarImage src={business.logo} alt={business.name} />
