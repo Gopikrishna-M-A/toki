@@ -7,45 +7,40 @@ import { Label } from "@radix-ui/react-label"
 import { Textarea } from "@/components/ui/textarea"
 import { useRouter } from "next/navigation"
 import axios from "axios"
-import { Image as ImageIcon, RotateCw } from "lucide-react"
-import { message, Upload } from 'antd';
+import { Image as ImageIcon, Plus, RotateCw } from "lucide-react"
+import { message, Upload } from "antd"
 
 const Form = () => {
   const router = useRouter()
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY
   const [loading, setLoading] = useState(false)
   const [fileList, setFileList] = useState([])
+  const [logoList, setLogoList] = useState([])
   const [suggestions, setSuggestions] = useState([])
   const [query, setQuery] = useState("")
   const [debounceTimeout, setDebounceTimeout] = useState(null)
   const [selectedOption, setSelectedOption] = useState(null)
-  const [description,setDescription] = useState('')
+  const [description, setDescription] = useState("")
   const [discover, setDiscover] = useState(false)
   const [business, setBusiness] = useState(null)
-  const { Dragger } = Upload;
-  const props = {
-    name: 'file',
-    multiple: true,
-    action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
-    onChange(info) {
-      const { status } = info.file;
-      if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
-      }
-      if (status === 'done') {
-        console.log(`${info.file.name} file uploaded successfully.`);
-      } else if (status === 'error') {
-        console.error(`${info.file.name} file upload failed.`);
-      }
-    },
-    onDrop(e) {
-      console.log('Dropped files', e.dataTransfer.files);
-    },
-  };
+  const { Dragger } = Upload
+
+  const uploadButton = (
+    <button type='button' className="flex flex-col justify-center items-center">
+      <Plus className="w-4 h-4"/>
+      <div>Upload</div>
+    </button>
+  )
   const handleChange = ({ fileList: newFileList }) => setFileList(newFileList)
+  const handleLogoChange = ({ fileList: newFileList }) => setLogoList(newFileList)
   useEffect(() => {
     getData()
   }, [query])
+
+  useEffect(() => {
+    console.log("logoList",logoList);
+    console.log("fileList",fileList);
+  }, [fileList,logoList])
 
   const getData = () => {
     if (debounceTimeout) {
@@ -108,45 +103,58 @@ const Form = () => {
     }
   }
 
-
   const onSubmit = async (e) => {
     // setLoading(true)
 
-    const formData = new FormData()
+    const formData1 = new FormData()
+
     fileList.map((file) => {
-      formData.append("file", file.originFileObj)
+      formData1.append("file", file.originFileObj)
     })
-    const res = await axios.post("/api/aws", formData, {
+    const imagesRes = await axios.post("/api/aws", formData1, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     })
-    const data = {
-        name:business?.displayName?.text,
-        types:business?.types,
-        address:business?.formattedAddress,
-        latitude: business?.location?.latitude,
-        longitude: business?.location?.longitude,
-        phone: business?.nationalPhoneNumber,
-        placeId:business?.id,
-        website:business?.websiteUri,
-        rating: business?.rating,
-        reviewCount:business?.userRatingCount,
-        iconBg:business?.iconBackgroundColor,
-        images:res.data,
-        description
-    }
-    console.log("data",data)
 
-    try {
-      await axios.post("/api/businesses", data).then((res)=>{
-        router.push('/dashboard')
-      })
-    } catch (error) {
-      console.error("Error:", error)
-    } finally {
-      setLoading(false)
+    const formData2 = new FormData()
+
+    logoList.map((file) => {
+      formData2.append("file", file.originFileObj)
+    })
+    const logoRes = await axios.post("/api/aws", formData2, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+
+    const data = {
+      name: business?.displayName?.text,
+      types: business?.types,
+      address: business?.formattedAddress,
+      latitude: business?.location?.latitude,
+      longitude: business?.location?.longitude,
+      phone: business?.nationalPhoneNumber,
+      placeId: business?.id,
+      website: business?.websiteUri,
+      rating: business?.rating,
+      reviewCount: business?.userRatingCount,
+      iconBg: business?.iconBackgroundColor,
+      logo:logoRes.data[0],
+      images: imagesRes.data,
+      description,
     }
+    console.log("data", data)
+
+    // try {
+    //   await axios.post("/api/businesses", data).then((res) => {
+    //     router.push("/dashboard")
+    //   })
+    // } catch (error) {
+    //   console.error("Error:", error)
+    // } finally {
+    //   setLoading(false)
+    // }
   }
   return (
     <div
@@ -170,7 +178,7 @@ const Form = () => {
           <div className='grid w-full items-center gap-1.5'>
             <Label htmlFor='name'>Is this your business?</Label>
             <Input
-            // focus-visible:ring-transparent
+              // focus-visible:ring-transparent
               className='flex-grow mr-2 text-black '
               placeholder='Search or enter'
               value={query}
@@ -180,19 +188,19 @@ const Form = () => {
                 setDiscover(false)
               }}
             />
-                    <div className='flex flex-col mt-2 gap-1'>
-            {(!selectedOption && query) &&
-              suggestions?.map((suggestion) => (
-                <div
-                  key={suggestion.placePrediction.placeId}
-                  className='bg-gray-100 rounded cursor-pointer hover:bg-gray-50 px-2 py-1 text-gray-500'
-                  onClick={() => handleOptionClick(suggestion)}>
-                  {suggestion.placePrediction.text.text}
-                </div>
-              ))}
+            <div className='flex flex-col mt-2 gap-1'>
+              {!selectedOption &&
+                query &&
+                suggestions?.map((suggestion) => (
+                  <div
+                    key={suggestion.placePrediction.placeId}
+                    className='bg-gray-100 rounded cursor-pointer hover:bg-gray-50 px-2 py-1 text-gray-500'
+                    onClick={() => handleOptionClick(suggestion)}>
+                    {suggestion.placePrediction.text.text}
+                  </div>
+                ))}
+            </div>
           </div>
-          </div>
-  
 
           <div className='grid w-full gap-1.5'>
             <Label htmlFor='description'>What do you do?</Label>
@@ -201,26 +209,40 @@ const Form = () => {
               id='description'
               name='description'
               value={description}
-              onChange={(e)=>setDescription(e.target.value)}
+              onChange={(e) => setDescription(e.target.value)}
             />
           </div>
 
           <div className='grid w-full items-center gap-1.5'>
-          <Dragger 
-          fileList={fileList}
-          onChange={handleChange}
-          multiple={true}
+          <Label htmlFor='description'>Logo</Label>
+            <Upload
+              className="-mt-2"
+              listType='picture-circle'
+              logoList={logoList}
+              onChange={handleLogoChange}
+             >
+              {logoList?.length >= 1 ? null : uploadButton}
+            </Upload>
+          </div>
 
-          >
-            <p className="ant-upload-drag-icon">
-            <ImageIcon className="mx-auto w-16 h-16 " />
-            </p>
-            <p className="ant-upload-text">Click or drag file to this area to upload</p>
-            <p className="ant-upload-hint">
-              Support for a single or bulk upload. Strictly prohibited from uploading company data or other
-              banned files.
-            </p>
-          </Dragger>
+          <div className='grid w-full items-center gap-1.5'>
+          <Label htmlFor='description'>Images</Label>
+            <Dragger
+             listType='picture-card'
+              fileList={fileList}
+              onChange={handleChange}
+              multiple={true}>
+              <p className='ant-upload-drag-icon'>
+                <ImageIcon className='mx-auto w-16 h-16 ' />
+              </p>
+              <p className='ant-upload-text'>
+                Click or drag file to this area to upload
+              </p>
+              <p className='ant-upload-hint'>
+                Support for a single or bulk upload. Strictly prohibited from
+                uploading company data or other banned files.
+              </p>
+            </Dragger>
           </div>
 
           {loading ? (

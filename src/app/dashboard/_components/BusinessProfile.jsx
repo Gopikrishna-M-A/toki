@@ -12,7 +12,7 @@ const BusinessProfile = ({ business }) => {
       <Card className="w-full max-w-3xl mx-auto">
         <CardHeader className="flex flex-row items-center space-x-4 pb-4">
           <Avatar className="w-20 h-20">
-            <AvatarImage src={business.images[0]} alt={business.name} />
+            <AvatarImage src={business.logo} alt={business.name} />
             <AvatarFallback className='font-bold text-3xl text-gray-400'>{business.name.charAt(0)}</AvatarFallback>
           </Avatar>
           <div>

@@ -9,11 +9,11 @@ const businessSchema = new mongoose.Schema(
     latitude: Number,
     longitude: Number,
     phone:String,
-    mapUri: String,
     website: String,
     rating: { type: Number, min: 0, max: 5 },
     reviewCount: { type: Number, default: 0 },
     images: [String],
+    logo:String,
     placeId:String,
     ownerId: {
       type: mongoose.Schema.Types.ObjectId,

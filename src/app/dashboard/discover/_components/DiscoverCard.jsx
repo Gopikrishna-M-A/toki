@@ -12,7 +12,7 @@ const DiscoverCard = ({ partner }) => {
       <Card key={partner.id} className='overflow-hidden h-full flex flex-col justify-between'>
      
           <Image
-            src={partner.images[1]}
+            src={partner.images[0]}
             alt={partner.name}
             width={400}
             height={200}
