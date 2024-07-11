@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/menubar"
 import Image from "next/image"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import Link from "next/link"
 
 const PartnerMobile = ({ business, perks }) => {
   const [currentPage, setCurrentPage] = useState(1)
@@ -38,9 +39,11 @@ const PartnerMobile = ({ business, perks }) => {
   return (
     <div className='w-full h-full flex md:hidden gap-2 flex-col relative bg-white'>
         <div className='absolute top-6 left-4'>
+          <Link href='/dashboard/discover'>
           <Button variant='ghost' size='icon'>
             <ChevronLeft className='mr-2 h-4 w-4' />
           </Button>
+          </Link>
         </div>
         <div className="flex flex-col gap-2 justify-center items-center mt-4">
             <div >

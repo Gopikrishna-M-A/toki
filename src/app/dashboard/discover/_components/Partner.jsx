@@ -4,6 +4,7 @@ import PerkCard from "./PerkCard"
 import { ChevronLeft, ChevronRight, StarIcon } from "lucide-react"
 import React, { useState } from "react"
 import StarRating from "./StarRating"
+import Link from "next/link"
 
 const Partner = ({ business, perks }) => {
   const [currentPage, setCurrentPage] = useState(1)
@@ -21,9 +22,11 @@ const Partner = ({ business, perks }) => {
     <div className='w-full h-full hidden md:flex gap-7 flex-col'>
       <div>
         <div className='flex justify-between items-center'>
+          <Link href='/dashboard/discover'>
           <Button variant='ghost'>
             <ChevronLeft className='mr-2 h-4 w-4' /> {business.name}
           </Button>
+          </Link>
           <Button>Lets Partner</Button>
         </div>
       </div>
