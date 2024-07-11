@@ -62,7 +62,7 @@ const CreatePerk = ({ business }) => {
     }
   }
   return (
-    <div className='w-full h-full flex gap-7 flex-col'>
+    <div className='w-full h-full flex gap-7 flex-col bg-white md:bg-gray-100'>
       <div>
         <div className='flex justify-between items-center'>
           <Link href='/dashboard/manage-perks'>
@@ -75,7 +75,7 @@ const CreatePerk = ({ business }) => {
       </div>
 
       <div className='bg-white rounded-lg py-10 px-5 pr-20 h-full flex flex-col gap-14'>
-        <div className='flex gap-10 justify-between items-start max-w-xl'>
+        <div className='flex md:flex-row flex-col gap-10 justify-between items-start max-w-xl'>
           <div className='grid w-full max-w-sm items-center gap-1.5'>
             <Label
               className='text-gray-400 font-light mb-2 text-sm'

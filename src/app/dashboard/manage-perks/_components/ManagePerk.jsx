@@ -34,7 +34,7 @@ const ManagePerk = ({ perks }) => {
         </div>
       </div>
 
-      <div className='w-full h-full gap-4'>
+      <div className='w-full md:h-full gap-4'>
         <div className='bg-white rounded-lg  pt-0 md:py-10 px-5 '>
           <div className='flex justify-center md:justify-between'>
             <h1 className='text-lg font-light '>Perks</h1>
@@ -64,7 +64,15 @@ const ManagePerk = ({ perks }) => {
             }
           </div>
         </div>
+       
       </div>
+      <Link className=" mx-auto md:hidden" href='/dashboard/manage-perks/createperks'>
+          <Button variant='outline'>
+            Create new perk
+          <Plus className='ml-2 h-4 w-4' />
+          </Button>
+      </Link>
+
     </div>
   )
 }

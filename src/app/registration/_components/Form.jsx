@@ -146,15 +146,15 @@ const Form = () => {
     }
     console.log("data", data)
 
-    // try {
-    //   await axios.post("/api/businesses", data).then((res) => {
-    //     router.push("/dashboard")
-    //   })
-    // } catch (error) {
-    //   console.error("Error:", error)
-    // } finally {
-    //   setLoading(false)
-    // }
+    try {
+      await axios.post("/api/businesses", data).then((res) => {
+        router.push("/dashboard")
+      })
+    } catch (error) {
+      console.error("Error:", error)
+    } finally {
+      setLoading(false)
+    }
   }
   return (
     <div
