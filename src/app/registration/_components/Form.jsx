@@ -148,7 +148,7 @@ const Form = () => {
 
     try {
       await axios.post("/api/businesses", data).then((res) => {
-        router.push("/dashboard")
+        router.push("/dashboard/discover")
       })
     } catch (error) {
       console.error("Error:", error)
