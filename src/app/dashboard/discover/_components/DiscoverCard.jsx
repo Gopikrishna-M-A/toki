@@ -33,11 +33,13 @@ const DiscoverCard = ({ partner }) => {
       
         </CardContent>
         <CardFooter className='px-4 py-2'>
-        <div>
+        <div className="w-full">
             <p className='text-xs text-gray-400 font-light'>Google ratings</p>
-            <div className='flex items-center mt-1'>
+            <div className='flex w-full items-center mt-1 gap-5'>
+              <div className="flex items-center">
               <span className='mr-1 text-xs '>{partner.rating || 0}</span>
               <StarIcon className='w-3 h-3 text-yellow-500 fill-current' />
+              </div>
               <span className='text-xs text-gray-500 ml-1'>
                 {partner.reviewCount || 0} reviews
               </span>
