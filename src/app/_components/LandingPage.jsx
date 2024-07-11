@@ -132,17 +132,37 @@ const LandingPage = () => {
         backgroundAttachment: "fixed",
       }}>
       <div className='w-full z-10 relative'>
-        <div className='flex justify-center items-center gap-4 mb-8'>
+        <div className='flex md:justify-center md:items-center gap-4 mb-8 px-5 md:px-0'>
           <Image
             src='/images/home/toki.png'
             width={43}
             height={43}
             alt='logo'
           />
-          <h1 className='text-4xl font-bold'>TOKI</h1>
+          <h1 className='text-4xl font-bold tracking-[.35em]'>TOKI</h1>
         </div>
 
-        <div className='mb-8 max-w-4xl mx-auto'>
+        <div className=" hidden md:flex flex-col justify-center md:items-center py-5 gap-2 ">
+          <div className="text-2xl md:text-4xl font-light">Ready to boost your customer base?</div>
+          <div className="text-md md:text-2xl font-thin">Grow your business by sharing special offers to local businesses today!</div>
+        </div>
+
+        <div className="flex flex-col md:flex-row gap-5 justify-between max-w-3xl items-start md:items-center md:mx-auto py-5 px-5 md:px-0">
+          <div className="flex flex-col md:items-center justify-center gap-1">
+            <div className="text-5xl md:text-7xl font-light">80%</div>
+            <div className="text-xl font-thin w-3/4 text-left md:text-center leading-6">Cheaper Customer acquisition</div>
+          </div>
+          <div className="flex flex-col md:items-center justify-center gap-1">
+            <div className="text-5xl md:text-7xl font-light">10X</div>
+            <div className="text-xl font-thin w-3/4 text-left md:text-center leading-6">Customer base</div>
+          </div>
+          <div className="flex flex-col md:items-center justify-center gap-1">
+            <div className="text-5xl md:text-7xl font-light">100%</div>
+            <div className="text-xl font-thin w-3/4 text-left md:text-center leading-6">Seamless</div>
+          </div>
+        </div>
+
+        <div className='mb-8 max-w-4xl mx-auto mt-7'>
           <h2 className='text-xl font-thin mb-4 text-center'>
             Let's find your potential partners
           </h2>
@@ -157,7 +177,7 @@ const LandingPage = () => {
                 setDiscover(false)
               }}
             />
-            <Button disabled={!selectedOption}  onClick={() => setDiscover(true)}>Discover</Button>
+            <Button onClick={() => selectedOption ? setDiscover(true) : null }>Discover</Button>
           </div>
           <div className='flex flex-col mt-2 gap-1'>
             {(!selectedOption && query) &&
@@ -199,7 +219,7 @@ const LandingPage = () => {
         )}
       </div>
       {/* Overlay to ensure text is readable */}
-      <div className='absolute inset-0 bg-black opacity-50 z-0'></div>
+      <div className='absolute inset-0 bg-black opacity-25 md:opacity-35 z-0'></div>
     </div>
   )
 }
