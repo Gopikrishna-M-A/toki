@@ -98,7 +98,7 @@ const Navbar = ({ children }) => {
           <DrawerHeader>
             <DrawerTitle className='text-gray-500'>Menu</DrawerTitle>
           </DrawerHeader>
-          <div className='mt-6 flex gap-1 flex-col flex-grow'>
+          <div className='mt-6 flex gap-1 flex-col px-5 flex-grow'>
             <NavItem href='/dashboard/discover' icon={Compass}>
               Discover
             </NavItem>
