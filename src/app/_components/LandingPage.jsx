@@ -7,69 +7,6 @@ import Image from "next/image"
 import { signIn } from "next-auth/react"
 import axios from "axios"
 
-const partnersData = [
-  {
-    id: 1,
-    name: "WeWork",
-    category: "Co-working",
-    description:
-      "Work from hot desks, lounges, phone booths and more. Book meeting rooms and private ",
-    rating: 4.7,
-    reviews: 252,
-    image: "/images/discover/1.png",
-  },
-  {
-    id: 2,
-    name: "Bombay Designer Boutique",
-    category: "Boutique",
-    description:
-      "Top and well known Ladies Tailoring Services in Koramangala, Bangalore and also known ",
-    rating: 4.8,
-    reviews: 149,
-    image: "/images/discover/2.png",
-  },
-  {
-    id: 3,
-    name: "ferns N petals",
-    category: "Florist",
-    description:
-      "Fresh Flowers & Perfect Gifts for all Occasions. Gift Ideas for your Beloved.",
-    rating: 4.6,
-    reviews: 576,
-    image: "/images/discover/3.png",
-  },
-  {
-    id: 4,
-    name: "Shades Creative Gallery",
-    category: "Art gallery",
-    description:
-      "ART GALLERY ART Gifts, FINE ART Paintings, Art prints, Artifacts and Home Decor product ",
-    rating: 4.8,
-    reviews: 149,
-    image: "/images/discover/4.png",
-  },
-  {
-    id: 5,
-    name: "Cult Fitness Centre",
-    category: "Gym/Fitness center",
-    description:
-      '"Walk-in to a state-of-the-art fitness centre where fitness = fun. From Dance fitness, Boxing',
-    rating: 4.8,
-    reviews: 149,
-    image: "/images/discover/5.png",
-  },
-  {
-    id: 6,
-    name: "Drapers",
-    category: "Co-living",
-    description:
-      '"Coworking + Coliving + Community + Events & Activities + Networking ',
-    rating: 4.8,
-    reviews: 149,
-    image: "/images/discover/6.png",
-  },
-]
-
 const LandingPage = () => {
   const [query, setQuery] = useState("")
   const [debounceTimeout, setDebounceTimeout] = useState(null)
@@ -77,7 +14,7 @@ const LandingPage = () => {
   const [selectedOption, setSelectedOption] = useState(null)
   const [relatedBusinesses, setRelatedBusinesses] = useState([])
   const [discover, setDiscover] = useState(false)
-  const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY
 
   useEffect(() => {
     getData()
@@ -101,7 +38,7 @@ const LandingPage = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            "X-Goog-Api-Key": API_KEY,
+            "X-Goog-Api-Key": apiKey,
           },
         }
       )
@@ -120,7 +57,7 @@ const LandingPage = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            "X-Goog-Api-Key": API_KEY,
+            "X-Goog-Api-Key": apiKey,
             "X-Goog-FieldMask":
               "id,displayName,formattedAddress,googleMapsUri,iconBackgroundColor,nationalPhoneNumber,rating,userRatingCount,websiteUri,attributions,location,types",
           },
@@ -159,7 +96,7 @@ const LandingPage = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            "X-Goog-Api-Key": API_KEY,
+            "X-Goog-Api-Key": apiKey,
             "X-Goog-FieldMask":
               "places.displayName,places.formattedAddress,places.location,places.types,places.nationalPhoneNumber,places.rating,places.userRatingCount,places.websiteUri,places.photos",
           },
@@ -211,7 +148,7 @@ const LandingPage = () => {
           </h2>
           <div className='flex bg-white p-2 rounded'>
             <Input
-              className='flex-grow mr-2 border-none text-black'
+              className='flex-grow mr-2 border-none text-black focus-visible:ring-transparent'
               placeholder='Third wave, HSR layout, 3rd main'
               value={query}
               onChange={(e) => {
@@ -220,7 +157,7 @@ const LandingPage = () => {
                 setDiscover(false)
               }}
             />
-            <Button onClick={() => setDiscover(true)}>Discover</Button>
+            <Button disabled={!selectedOption}  onClick={() => setDiscover(true)}>Discover</Button>
           </div>
           <div className='flex flex-col mt-2 gap-1'>
             {(!selectedOption && query) &&

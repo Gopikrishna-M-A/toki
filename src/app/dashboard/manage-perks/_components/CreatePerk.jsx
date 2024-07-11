@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/popover"
 import axios from "axios"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 const CreatePerk = ({ business }) => {
   const router = useRouter()
@@ -24,14 +25,13 @@ const CreatePerk = ({ business }) => {
     email: false,
     website: false,
   })
-  const [newCustomerRestriction, setNewCustomerRestriction] = useState('')
-  const [date, setDate] = useState('')
-  const [title,setTitle] = useState('')
-  const [description,setDescription] = useState('')
-  const [instructions,setInstructions] = useState('')
-  const [note,setNote] = useState('')
-  const [loading,setLoading] = useState(false)
-
+  const [newCustomerRestriction, setNewCustomerRestriction] = useState("")
+  const [date, setDate] = useState("")
+  const [title, setTitle] = useState("")
+  const [description, setDescription] = useState("")
+  const [instructions, setInstructions] = useState("")
+  const [note, setNote] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const handleDealModeChange = (mode) => {
     setDealModes((prev) => ({ ...prev, [mode]: !prev[mode] }))
@@ -39,26 +39,25 @@ const CreatePerk = ({ business }) => {
 
   const generatePerk = async () => {
     setLoading(true)
-    const data= {
-        businessId:business._id,
-        title,
-        description,
-        specialInstructions:instructions,
-        noteForPartner:note,
-        dealModes,
-        newCustomerRestriction,
-        validUntil:date
+    const data = {
+      businessId: business._id,
+      title,
+      description,
+      validUntil: date,
+      // specialInstructions: instructions,
+      // noteForPartner: note,
+      // dealModes,
+      // newCustomerRestriction,
     }
 
     try {
-      const res =  await axios.post('/api/perks',data)
-      if(res.status === 200){
-        router.push('/dashboard/manage-perks')
+      const res = await axios.post("/api/perks", data)
+      if (res.status === 200) {
+        router.push("/dashboard/manage-perks")
       }
-
     } catch (error) {
-        console.error(error);
-    }finally{
+      console.error(error)
+    } finally {
       setLoading(false)
     }
   }
@@ -66,22 +65,30 @@ const CreatePerk = ({ business }) => {
     <div className='w-full h-full flex gap-7 flex-col'>
       <div>
         <div className='flex justify-between items-center'>
-          <Button variant='ghost'>
-            <ChevronLeft className='mr-2 h-4 w-4' /> Manage Perks | Create new
-            token
-          </Button>
+          <Link href='/dashboard/manage-perks'>
+            <Button variant='ghost'>
+              <ChevronLeft className='mr-2 h-4 w-4' /> Manage Perks | Create new
+              token
+            </Button>
+          </Link>
         </div>
       </div>
 
       <div className='bg-white rounded-lg py-10 px-5 pr-20 h-full flex flex-col gap-14'>
-        <div className='flex gap-10 justify-between items-start'>
+        <div className='flex gap-10 justify-between items-start max-w-xl'>
           <div className='grid w-full max-w-sm items-center gap-1.5'>
             <Label
               className='text-gray-400 font-light mb-2 text-sm'
               htmlFor='title'>
               Deal title
             </Label>
-            <Input type='text' id='title' placeholder='Title' value={title} onChange={(e)=>setTitle(e.target.value)}/>
+            <Input
+              type='text'
+              id='title'
+              placeholder='Title'
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
           </div>
           <div className='grid w-full max-w-sm items-center gap-1.5'>
             <Label
@@ -111,7 +118,7 @@ const CreatePerk = ({ business }) => {
               </PopoverContent>
             </Popover>
           </div>
-          <div className=''>
+          {/* <div className=''>
             <Label
               className='text-gray-400 font-light mb-2 text-sm'
               htmlFor='email'>
@@ -128,24 +135,34 @@ const CreatePerk = ({ business }) => {
                 </Button>
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
-        <div className='flex justify-between gap-5'>
+        <div className='flex justify-between gap-5 max-w-xl'>
           <div className='grid w-full gap-1.5'>
             <Label
               className='text-gray-400 font-light mb-2 text-sm'
               htmlFor='description'>
               Description
             </Label>
-            <Textarea placeholder='Type your description here.' id='description' value={description} onChange={(e)=>setDescription(e.target.value)}/>
+            <Textarea
+              placeholder='Type your description here.'
+              id='description'
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
           </div>
-          <div className='grid w-full gap-1.5'>
+          {/* <div className='grid w-full gap-1.5'>
             <Label
               className='text-gray-400 font-light mb-2 text-sm'
               htmlFor='instructions'>
               Special instructions
             </Label>
-            <Textarea placeholder='Type your instructions here.' id='instructions' value={instructions} onChange={(e)=>setInstructions(e.target.value)}/>
+            <Textarea
+              placeholder='Type your instructions here.'
+              id='instructions'
+              value={instructions}
+              onChange={(e) => setInstructions(e.target.value)}
+            />
           </div>
           <div className='grid w-full gap-1.5'>
             <Label
@@ -153,12 +170,19 @@ const CreatePerk = ({ business }) => {
               htmlFor='note'>
               Note for partner
             </Label>
-            <Textarea placeholder='Type your note here.' id='note' value={note} onChange={(e)=>setNote(e.target.value)}/>
-          </div>
+            <Textarea
+              placeholder='Type your note here.'
+              id='note'
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+            />
+          </div> */}
         </div>
-        <div>
-          <RadioGroup defaultValue='comfortable' value={newCustomerRestriction} 
-          onValueChange={setNewCustomerRestriction}>
+        {/* <div>
+          <RadioGroup
+            defaultValue='comfortable'
+            value={newCustomerRestriction}
+            onValueChange={setNewCustomerRestriction}>
             <Label className='text-gray-400 font-light text-sm'>
               New Customer Restriction
             </Label>
@@ -175,7 +199,7 @@ const CreatePerk = ({ business }) => {
               </Label>
             </div>
           </RadioGroup>
-        </div>
+        </div> */}
         <div className='flex justify-end'>
           {loading ? (
             <Button disabled>

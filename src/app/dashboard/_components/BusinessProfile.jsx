@@ -3,20 +3,21 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Phone, Mail, Star } from "lucide-react";
+import { MapPin, Phone, Mail, Star, Link, Globe } from "lucide-react";
 
 const BusinessProfile = ({ business }) => {
+  console.log(business.images[0]);
   return (
     <div className="container mx-auto p-4">
       <Card className="w-full max-w-3xl mx-auto">
         <CardHeader className="flex flex-row items-center space-x-4 pb-4">
           <Avatar className="w-20 h-20">
-            <AvatarImage src={business.logoUrl} alt={business.name} />
+            <AvatarImage src={business.images[0]} alt={business.name} />
             <AvatarFallback className='font-bold text-3xl text-gray-400'>{business.name.charAt(0)}</AvatarFallback>
           </Avatar>
           <div>
             <CardTitle className="text-2xl font-bold">{business.name}</CardTitle>
-            <Badge variant="secondary" className="mt-1">{business.type}</Badge>
+            <Badge variant="secondary" className="mt-1">{business.types[0]}</Badge>
           </div>
         </CardHeader>
         <CardContent>
@@ -26,18 +27,18 @@ const BusinessProfile = ({ business }) => {
             <div className="flex items-center space-x-2">
               <MapPin className="text-gray-400" size={16} />
               <span>
-                {`${business.address.street}, ${business.address.city}, ${business.address.state} ${business.address.zipCode}, ${business.address.country}`}
+                {business.address}
               </span>
             </div>
             
             <div className="flex items-center space-x-2">
               <Phone className="text-gray-400" size={16} />
-              <span>{business.contactInfo.phone}</span>
+              <span>{business.phone}</span>
             </div>
             
             <div className="flex items-center space-x-2">
-              <Mail className="text-gray-400" size={16} />
-              <span>{business.contactInfo.email}</span>
+            <Globe  className="text-gray-400" size={16} />
+            <a className='text-blue-600 hover:text-blue-500' href={business.website}>website</a>
             </div>
             
             <div className="flex items-center space-x-2">

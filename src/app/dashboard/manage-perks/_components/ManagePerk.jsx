@@ -21,9 +21,11 @@ const ManagePerk = ({ perks }) => {
     <div className='w-full h-full flex gap-7 flex-col'>
       <div>
         <div className='flex justify-between items-center'>
-          <Button variant='ghost'>
+         <Link href='/dashboard/discover'>
+         <Button variant='ghost'>
             <ChevronLeft className='mr-2 h-4 w-4' /> Manage Perks
           </Button>
+          </Link>
           <Link href='/dashboard/manage-perks/createperks'>
           <Button variant='outline'>
             Create new perk

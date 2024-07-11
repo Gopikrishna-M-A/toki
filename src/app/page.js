@@ -13,7 +13,7 @@ const page = async () => {
   console.log("session",session);
   if (session?.user) {
     if(business){
-      redirect('/dashboard')
+      redirect('/dashboard/discover')
     }else{
       redirect('/registration')
     }

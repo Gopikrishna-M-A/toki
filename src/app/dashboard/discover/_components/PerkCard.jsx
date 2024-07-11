@@ -11,7 +11,7 @@ const PerkCard = ({ perk }) => {
         <CardHeader className='p-4'>
           <div className='flex justify-between items-center'>
               <h2 className='text-base font-semibold'>{perk?.businessId?.name}</h2>
-              <span className='text-xs text-blue-600 bg-blue-100 font-medium px-2 rounded-full'>{perk?.businessId?.type}</span>
+              <span className='text-xs text-blue-600 bg-blue-100 font-medium px-2 rounded-full'>{perk?.businessId?.types[0]}</span>
           </div>
         </CardHeader>
         <CardContent className='p-4 pt-0 flex flex-col justify-between'>

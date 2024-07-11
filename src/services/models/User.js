@@ -6,12 +6,6 @@ const UserSchema = new mongoose.Schema(
     email: { type: String, unique: true },
     image: String,
     emailVerified: Date,
-    role: {
-      type: String,
-      enum: ["business_owner", "admin", "user"],
-      default: "user",
-    },
-    businessId: { type: mongoose.Schema.Types.ObjectId, ref: "Business" },
   },
   { timestamps: true }
 )

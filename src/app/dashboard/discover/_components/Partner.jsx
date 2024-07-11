@@ -3,12 +3,12 @@ import { Button } from "@/components/ui/button"
 import PerkCard from "./PerkCard"
 import { ChevronLeft, ChevronRight, StarIcon } from "lucide-react"
 import React, { useState } from "react"
-
+import StarRating from "./StarRating"
 
 const Partner = ({ business, perks }) => {
   const [currentPage, setCurrentPage] = useState(1)
   const totalPages = 8 // Assuming 8 pages as shown in the image
-
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY
   const handlePrevPage = () => {
     setCurrentPage((prev) => Math.max(prev - 1, 1))
   }
@@ -16,7 +16,7 @@ const Partner = ({ business, perks }) => {
   const handleNextPage = () => {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages))
   }
-
+  const mapUri = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=place_id:${business.placeId}`;
   return (
     <div className='w-full h-full flex gap-7 flex-col'>
       <div>
@@ -31,18 +31,7 @@ const Partner = ({ business, perks }) => {
         <div className='bg-white col-span-2 rounded-lg py-10 px-5 flex flex-col gap-5'>
           <div className='text-lg font-light text-gray-800'>About</div>
           <div className='flex gap-2 items-center'>
-            <div className='flex gap-2'>
-              {/* <StarIcon className='w-6 h-6 text-yellow-300 fill-current' />
-              <StarIcon className='w-6 h-6 text-yellow-300 fill-current' />
-              <StarIcon className='w-6 h-6 text-yellow-300 fill-current' />
-              <StarIcon className='w-6 h-6 text-yellow-300 fill-current' /> */}
-              <StarIcon className='w-6 h-6 text-gray-200 ' />
-              <StarIcon className='w-6 h-6 text-gray-200 ' />
-              <StarIcon className='w-6 h-6 text-gray-200 ' />
-              <StarIcon className='w-6 h-6 text-gray-200 ' />
-              <StarIcon className='w-6 h-6 text-gray-200 ' />
-            </div>
-            <span className='text-xs text-gray-600'>{business.rating || 0} ratings</span>
+            <StarRating rating={business.rating}/>
           </div>
           <div className='flex gap-10'>
             <div className='flex flex-col items-center'>
@@ -63,7 +52,17 @@ const Partner = ({ business, perks }) => {
 
           <div className='flex flex-col gap-2'>
             <div className='text-sm text-gray-400'>Location</div>
-            <div className='w-80 h-32 bg-gray-200 rounded-lg'></div>
+            <div className='w-80 h-32 bg-gray-200 rounded-lg'>
+            <div className='w-80 h-32  rounded-lg overflow-hidden'>
+        <iframe
+          src={mapUri}
+          width="100%"
+          height="100%"
+          style={{ border: 0 }}
+          allowFullScreen
+        ></iframe>
+      </div>
+            </div>
           </div>
         </div>
 

@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
@@ -7,64 +7,139 @@ import { Label } from "@radix-ui/react-label"
 import { Textarea } from "@/components/ui/textarea"
 import { useRouter } from "next/navigation"
 import axios from "axios"
-import { RotateCw } from "lucide-react"
+import { Image as ImageIcon, RotateCw } from "lucide-react"
+import { message, Upload } from 'antd';
 
 const Form = () => {
   const router = useRouter()
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY
   const [loading, setLoading] = useState(false)
-  const [formData, setFormData] = useState({
-    name: "",
-    type: "",
-    description: "",
-    address: {
-      street: "",
-      city: "",
-      state: "",
-      zipCode: "",
-      country: "",
+  const [fileList, setFileList] = useState([])
+  const [suggestions, setSuggestions] = useState([])
+  const [query, setQuery] = useState("")
+  const [debounceTimeout, setDebounceTimeout] = useState(null)
+  const [selectedOption, setSelectedOption] = useState(null)
+  const [description,setDescription] = useState('')
+  const [discover, setDiscover] = useState(false)
+  const [business, setBusiness] = useState(null)
+  const { Dragger } = Upload;
+  const props = {
+    name: 'file',
+    multiple: true,
+    action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
+    onChange(info) {
+      const { status } = info.file;
+      if (status !== 'uploading') {
+        console.log(info.file, info.fileList);
+      }
+      if (status === 'done') {
+        console.log(`${info.file.name} file uploaded successfully.`);
+      } else if (status === 'error') {
+        console.error(`${info.file.name} file upload failed.`);
+      }
     },
-    contactInfo: {
-      phone: "",
-      email: "",
+    onDrop(e) {
+      console.log('Dropped files', e.dataTransfer.files);
     },
-    logoUrl: "",
-  })
+  };
+  const handleChange = ({ fileList: newFileList }) => setFileList(newFileList)
+  useEffect(() => {
+    getData()
+  }, [query])
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }))
+  const getData = () => {
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout)
+    }
+
+    const timeout = setTimeout(() => fetchSuggestions(), 300)
+    setDebounceTimeout(timeout)
   }
 
-  const handleAddressChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prevState) => ({
-      ...prevState,
-      address: {
-        ...prevState.address,
-        [name]: value,
-      },
-    }))
+  const fetchSuggestions = async () => {
+    try {
+      console.log("Fetching suggestions for query:", query)
+      const response = await axios.post(
+        "https://places.googleapis.com/v1/places:autocomplete",
+        { input: query },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "X-Goog-Api-Key": apiKey,
+          },
+        }
+      )
+      console.log("Suggestions received:", response.data.suggestions)
+      setSuggestions(response.data.suggestions)
+    } catch (error) {
+      console.error("Error fetching suggestions:", error)
+    }
   }
 
-  const handleContactInfoChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prevState) => ({
-      ...prevState,
-      contactInfo: {
-        ...prevState.contactInfo,
-        [name]: value,
-      },
-    }))
+  const handleOptionClick = async (suggestion) => {
+    setQuery(suggestion.placePrediction.text.text)
+    setSelectedOption(suggestion)
+    setSuggestions([])
+
+    const businessDetails = await fetchBusinessDetails(
+      suggestion.placePrediction.placeId
+    )
+    setBusiness(businessDetails)
   }
+
+  const fetchBusinessDetails = async (placeId) => {
+    try {
+      console.log("Fetching business details for placeId:", placeId)
+      const response = await axios.get(
+        `https://places.googleapis.com/v1/places/${placeId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "X-Goog-Api-Key": apiKey,
+            "X-Goog-FieldMask":
+              "id,displayName,formattedAddress,iconBackgroundColor,nationalPhoneNumber,rating,userRatingCount,websiteUri,attributions,location,types",
+          },
+        }
+      )
+      console.log("Business details received:", response.data)
+      return response.data
+    } catch (error) {
+      console.error("Error fetching business details:", error)
+    }
+  }
+
 
   const onSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
+    // setLoading(true)
+
+    const formData = new FormData()
+    fileList.map((file) => {
+      formData.append("file", file.originFileObj)
+    })
+    const res = await axios.post("/api/aws", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    const data = {
+        name:business?.displayName?.text,
+        types:business?.types,
+        address:business?.formattedAddress,
+        latitude: business?.location?.latitude,
+        longitude: business?.location?.longitude,
+        phone: business?.nationalPhoneNumber,
+        placeId:business?.id,
+        website:business?.websiteUri,
+        rating: business?.rating,
+        reviewCount:business?.userRatingCount,
+        iconBg:business?.iconBackgroundColor,
+        images:res.data,
+        description
+    }
+    console.log("data",data)
+
     try {
-      await axios.post("/api/businesses", formData).then((res)=>{
+      await axios.post("/api/businesses", data).then((res)=>{
         router.push('/dashboard')
       })
     } catch (error) {
@@ -91,117 +166,61 @@ const Form = () => {
           <h1 className='text-4xl font-bold'>TOKI</h1>
         </div>
 
-        <form
-          onSubmit={onSubmit}
-          className='max-w-4xl w-full bg-white rounded-lg mx-auto shadow-lg px-5 py-10 flex flex-col gap-5'>
+        <div className='max-w-4xl w-full bg-white rounded-lg mx-auto shadow-lg px-5 py-10 flex flex-col gap-5'>
           <div className='grid w-full items-center gap-1.5'>
-            <Label htmlFor='name'>Business Name</Label>
+            <Label htmlFor='name'>Is this your business?</Label>
             <Input
-              type='text'
-              id='name'
-              name='name'
-              value={formData.name}
-              onChange={handleInputChange}
-              placeholder='Enter business name'
-              required
+            // focus-visible:ring-transparent
+              className='flex-grow mr-2 text-black '
+              placeholder='Search or enter'
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value)
+                setSelectedOption(null)
+                setDiscover(false)
+              }}
             />
+                    <div className='flex flex-col mt-2 gap-1'>
+            {(!selectedOption && query) &&
+              suggestions?.map((suggestion) => (
+                <div
+                  key={suggestion.placePrediction.placeId}
+                  className='bg-gray-100 rounded cursor-pointer hover:bg-gray-50 px-2 py-1 text-gray-500'
+                  onClick={() => handleOptionClick(suggestion)}>
+                  {suggestion.placePrediction.text.text}
+                </div>
+              ))}
           </div>
-
-          <div className='grid w-full items-center gap-1.5'>
-            <Label htmlFor='type'>Business Type</Label>
-            <Input
-              type='text'
-              id='type'
-              name='type'
-              value={formData.type}
-              onChange={handleInputChange}
-              placeholder='e.g., Cafe, Restaurant, Retail'
-              required
-            />
           </div>
+  
 
           <div className='grid w-full gap-1.5'>
-            <Label htmlFor='description'>Description</Label>
+            <Label htmlFor='description'>What do you do?</Label>
             <Textarea
               placeholder='Describe your business'
               id='description'
               name='description'
-              value={formData.description}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          <div className='grid w-full gap-1.5'>
-            <Label>Address</Label>
-            <Textarea
-              type='text'
-              placeholder='Street'
-              name='street'
-              value={formData.address.street}
-              onChange={handleAddressChange}
-            />
-            <div className='flex gap-2'>
-              <Input
-                type='text'
-                placeholder='City'
-                name='city'
-                value={formData.address.city}
-                onChange={handleAddressChange}
-              />
-              <Input
-                type='text'
-                placeholder='State'
-                name='state'
-                value={formData.address.state}
-                onChange={handleAddressChange}
-              />
-            </div>
-            <div className='flex gap-2'>
-              <Input
-                type='text'
-                placeholder='Zip Code'
-                name='zipCode'
-                value={formData.address.zipCode}
-                onChange={handleAddressChange}
-              />
-              <Input
-                type='text'
-                placeholder='Country'
-                name='country'
-                value={formData.address.country}
-                onChange={handleAddressChange}
-              />
-            </div>
-          </div>
-
-          <div className='grid w-full gap-1.5'>
-            <Label>Contact Information</Label>
-            <Input
-              type='tel'
-              placeholder='Phone Number'
-              name='phone'
-              value={formData.contactInfo.phone}
-              onChange={handleContactInfoChange}
-            />
-            <Input
-              type='email'
-              placeholder='Business Email'
-              name='email'
-              value={formData.contactInfo.email}
-              onChange={handleContactInfoChange}
+              value={description}
+              onChange={(e)=>setDescription(e.target.value)}
             />
           </div>
 
           <div className='grid w-full items-center gap-1.5'>
-            <Label htmlFor='logoUrl'>Logo URL</Label>
-            <Input
-              type='url'
-              id='logoUrl'
-              name='logoUrl'
-              value={formData.logoUrl}
-              onChange={handleInputChange}
-              placeholder='https://example.com/logo.png'
-            />
+          <Dragger 
+          fileList={fileList}
+          onChange={handleChange}
+          multiple={true}
+
+          >
+            <p className="ant-upload-drag-icon">
+            <ImageIcon className="mx-auto w-16 h-16 " />
+            </p>
+            <p className="ant-upload-text">Click or drag file to this area to upload</p>
+            <p className="ant-upload-hint">
+              Support for a single or bulk upload. Strictly prohibited from uploading company data or other
+              banned files.
+            </p>
+          </Dragger>
           </div>
 
           {loading ? (
@@ -210,11 +229,11 @@ const Form = () => {
               Please wait
             </Button>
           ) : (
-            <Button type='submit' className='mt-4'>
+            <Button onClick={onSubmit} type='submit' className='mt-4'>
               Continue
             </Button>
           )}
-        </form>
+        </div>
       </div>
     </div>
   )

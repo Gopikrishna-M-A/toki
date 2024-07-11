@@ -1,10 +1,11 @@
 import mongoose from "mongoose"
 
 const notificationSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  type: { type: String, required: true },
-  content: { type: String, required: true },
-  relatedId: mongoose.Schema.Types.ObjectId,
+  senderBusinessId: { type: mongoose.Schema.Types.ObjectId, ref: 'Business', required: true },
+  receiverBusinessId: { type: mongoose.Schema.Types.ObjectId, ref: 'Business', required: true },
+  type: { type: String, enum: ['PARTNERSHIP_REQUEST'], required: true },
+  status: { type: String, enum: ['PENDING', 'ACCEPTED', 'REJECTED'], default: 'PENDING' },
+  message: { type: String, required: true },
   isRead: { type: Boolean, default: false }
 }, { timestamps: true });
 
