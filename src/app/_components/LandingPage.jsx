@@ -205,7 +205,7 @@ const LandingPage = () => {
           <h1 className='text-4xl font-bold tracking-[.35em]'>TOKI</h1>
         </div>
 
-        <div className=' hidden md:flex flex-col justify-center md:items-center py-5 gap-2 '>
+       {!discover &&  <div className=' hidden md:flex flex-col justify-center md:items-center py-5 gap-2 '>
           <div className='text-2xl md:text-4xl font-light'>
             Ready to boost your customer base?
           </div>
@@ -213,28 +213,32 @@ const LandingPage = () => {
             Grow your business by sharing special offers to local businesses
             today!
           </div>
-        </div>
+        </div>}
 
+        {!discover && 
         <div className='flex flex-col md:flex-row gap-5 justify-between max-w-3xl items-start md:items-center md:mx-auto py-5 px-5 md:px-0'>
-          <div className='flex flex-col md:items-center justify-center gap-1'>
-            <div className='text-5xl md:text-7xl font-light'>80%</div>
-            <div className='text-xl font-thin w-3/4 text-left md:text-center leading-6'>
-              Cheaper Customer acquisition
-            </div>
-          </div>
-          <div className='flex flex-col md:items-center justify-center gap-1'>
-            <div className='text-5xl md:text-7xl font-light'>10X</div>
-            <div className='text-xl font-thin w-3/4 text-left md:text-center leading-6'>
-              Customer base
-            </div>
-          </div>
-          <div className='flex flex-col md:items-center justify-center gap-1'>
-            <div className='text-5xl md:text-7xl font-light'>100%</div>
-            <div className='text-xl font-thin w-3/4 text-left md:text-center leading-6'>
-              Seamless
-            </div>
+        <div className='flex flex-col md:items-center justify-center gap-1'>
+          <div className='text-5xl md:text-7xl font-light'>80%</div>
+          <div className='text-xl font-thin w-3/4 text-left md:text-center leading-6'>
+            Cheaper Customer acquisition
           </div>
         </div>
+        <div className='flex flex-col md:items-center justify-center gap-1'>
+          <div className='text-5xl md:text-7xl font-light'>10X</div>
+          <div className='text-xl font-thin w-3/4 text-left md:text-center leading-6'>
+            Customer base
+          </div>
+        </div>
+        <div className='flex flex-col md:items-center justify-center gap-1'>
+          <div className='text-5xl md:text-7xl font-light'>100%</div>
+          <div className='text-xl font-thin w-3/4 text-left md:text-center leading-6'>
+            Seamless
+          </div>
+        </div>
+      </div>
+        }
+
+        
 
         <div className='mb-8 max-w-4xl mx-auto mt-7'>
           <h2 className='text-xl font-thin mb-4 text-center'>
