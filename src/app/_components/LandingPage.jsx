@@ -13,6 +13,7 @@ const LandingPage = () => {
   const [suggestions, setSuggestions] = useState([])
   const [selectedOption, setSelectedOption] = useState(null)
   const [relatedBusinesses, setRelatedBusinesses] = useState([])
+  const [partnerDetails, setPartnerDetails] = useState([])
   const [discover, setDiscover] = useState(false)
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY
 
@@ -30,11 +31,62 @@ const LandingPage = () => {
   }
 
   const fetchSuggestions = async () => {
+    const excludedTypes = [
+      "administrative_area_level_1",
+      "administrative_area_level_2",
+      "country",
+      "locality",
+      "postal_code",
+      "school_district",
+      "church",
+      "hindu_temple",
+      "mosque",
+      "synagogue",
+      "administrative_area_level_3",
+      "administrative_area_level_4",
+      "administrative_area_level_5",
+      "administrative_area_level_6",
+      "administrative_area_level_7",
+      "archipelago",
+      "colloquial_area",
+      "continent",
+      "establishment",
+      "floor",
+      "general_contractor",
+      "geocode",
+      "intersection",
+      "landmark",
+      "natural_feature",
+      "neighborhood",
+      "place_of_worship",
+      "plus_code",
+      "point_of_interest",
+      "political",
+      "post_box",
+      "postal_code_prefix",
+      "postal_code_suffix",
+      "postal_town",
+      "premise",
+      "room",
+      "route",
+      "street_address",
+      "street_number",
+      "sublocality",
+      "sublocality_level_1",
+      "sublocality_level_2",
+      "sublocality_level_3",
+      "sublocality_level_4",
+      "sublocality_level_5",
+      "subpremise",
+      "town_square",
+    ]
     try {
       console.log("Fetching suggestions for query:", query)
       const response = await axios.post(
         "https://places.googleapis.com/v1/places:autocomplete",
-        { input: query },
+        {
+          input: query,
+        },
         {
           headers: {
             "Content-Type": "application/json",
@@ -42,8 +94,12 @@ const LandingPage = () => {
           },
         }
       )
-      console.log("Suggestions received:", response.data.suggestions)
-      setSuggestions(response.data.suggestions)
+      const filteredSuggestions = response.data.suggestions.filter(suggestion => {
+        const types = suggestion.placePrediction?.types || [];
+        return types.some(type => !excludedTypes.includes(type));
+      })
+
+      setSuggestions(filteredSuggestions)
     } catch (error) {
       console.error("Error fetching suggestions:", error)
     }
@@ -103,7 +159,14 @@ const LandingPage = () => {
         }
       )
       console.log("Related businesses received:", response.data.places)
-      setRelatedBusinesses(response.data.places)
+      const detailedBusinesses = await Promise.all(
+        response.data.places.map(async (place) => {
+          const details = await fetchBusinessDetails(place.id)
+          return { ...place, ...details }
+        })
+      )
+      
+      setPartnerDetails(detailedBusinesses)
     } catch (error) {
       console.error("Error fetching related businesses:", error)
     }
@@ -142,23 +205,34 @@ const LandingPage = () => {
           <h1 className='text-4xl font-bold tracking-[.35em]'>TOKI</h1>
         </div>
 
-        <div className=" hidden md:flex flex-col justify-center md:items-center py-5 gap-2 ">
-          <div className="text-2xl md:text-4xl font-light">Ready to boost your customer base?</div>
-          <div className="text-md md:text-2xl font-thin">Grow your business by sharing special offers to local businesses today!</div>
+        <div className=' hidden md:flex flex-col justify-center md:items-center py-5 gap-2 '>
+          <div className='text-2xl md:text-4xl font-light'>
+            Ready to boost your customer base?
+          </div>
+          <div className='text-md md:text-2xl font-thin'>
+            Grow your business by sharing special offers to local businesses
+            today!
+          </div>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-5 justify-between max-w-3xl items-start md:items-center md:mx-auto py-5 px-5 md:px-0">
-          <div className="flex flex-col md:items-center justify-center gap-1">
-            <div className="text-5xl md:text-7xl font-light">80%</div>
-            <div className="text-xl font-thin w-3/4 text-left md:text-center leading-6">Cheaper Customer acquisition</div>
+        <div className='flex flex-col md:flex-row gap-5 justify-between max-w-3xl items-start md:items-center md:mx-auto py-5 px-5 md:px-0'>
+          <div className='flex flex-col md:items-center justify-center gap-1'>
+            <div className='text-5xl md:text-7xl font-light'>80%</div>
+            <div className='text-xl font-thin w-3/4 text-left md:text-center leading-6'>
+              Cheaper Customer acquisition
+            </div>
           </div>
-          <div className="flex flex-col md:items-center justify-center gap-1">
-            <div className="text-5xl md:text-7xl font-light">10X</div>
-            <div className="text-xl font-thin w-3/4 text-left md:text-center leading-6">Customer base</div>
+          <div className='flex flex-col md:items-center justify-center gap-1'>
+            <div className='text-5xl md:text-7xl font-light'>10X</div>
+            <div className='text-xl font-thin w-3/4 text-left md:text-center leading-6'>
+              Customer base
+            </div>
           </div>
-          <div className="flex flex-col md:items-center justify-center gap-1">
-            <div className="text-5xl md:text-7xl font-light">100%</div>
-            <div className="text-xl font-thin w-3/4 text-left md:text-center leading-6">Seamless</div>
+          <div className='flex flex-col md:items-center justify-center gap-1'>
+            <div className='text-5xl md:text-7xl font-light'>100%</div>
+            <div className='text-xl font-thin w-3/4 text-left md:text-center leading-6'>
+              Seamless
+            </div>
           </div>
         </div>
 
@@ -177,10 +251,13 @@ const LandingPage = () => {
                 setDiscover(false)
               }}
             />
-            <Button onClick={() => selectedOption ? setDiscover(true) : null }>Discover</Button>
+            <Button onClick={() => (selectedOption ? setDiscover(true) : null)}>
+              Discover
+            </Button>
           </div>
           <div className='flex flex-col mt-2 gap-1'>
-            {(!selectedOption && query) &&
+            {!selectedOption &&
+              query &&
               suggestions?.map((suggestion) => (
                 <div
                   key={suggestion.placePrediction.placeId}
@@ -194,7 +271,7 @@ const LandingPage = () => {
 
         {discover && (
           <div className='grid max-w-6xl grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-5 md:gap-2 mx-auto'>
-            {relatedBusinesses.map((partner, index) => (
+            {partnerDetails.map((partner, index) => (
               <PartnerCard key={index} partner={partner} />
             ))}
           </div>

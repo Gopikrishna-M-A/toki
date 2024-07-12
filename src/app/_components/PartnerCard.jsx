@@ -12,21 +12,28 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { useState } from "react"
 
 const PartnerCard = ({ partner }) => {
+  console.log("partner",partner);
   const [imageLoaded, setImageLoaded] = useState(false)
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY
+  const name = partner.photos[0].name
+  const photoRef = name.split("photos/")[1];
+  const imageUri = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${photoRef}&key=${apiKey}`
   return (
     <Card className='w-44 overflow-hidden flex flex-col justify-between mx-auto'>
       <div className='relative w-full h-24'>
-      {!imageLoaded ? (
+      {/* {!imageLoaded ? (
         <Skeleton className="absolute inset-0 rounded-lg" />
-      ): <Image
-      src={partner.photos[0].authorAttributions.photoUri}
+      ):  */}
+      <Image
+      src={imageUri}
       alt={"image"}
       layout='fill'
       objectFit='cover'
       className='rounded-lg'
       onLoad={() => setImageLoaded(true)}
       onError={() => setImageLoaded(false)}
-    />}
+    />
+    {/* } */}
        
       </div>
 
