@@ -247,7 +247,7 @@ const LandingPage = () => {
           <div className='flex bg-white p-2 rounded'>
             <Input
               className='flex-grow mr-2 border-none text-black focus-visible:ring-transparent'
-              placeholder='Third wave, HSR layout, 3rd main'
+              placeholder='Search for your business by name, e.g. “Toki”'
               value={query}
               onChange={(e) => {
                 setQuery(e.target.value)
