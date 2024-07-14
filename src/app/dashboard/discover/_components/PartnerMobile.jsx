@@ -2,40 +2,73 @@
 import { Button } from "@/components/ui/button"
 import PerkCard from "./PerkCard"
 import { ChevronLeft, ChevronRight, StarIcon } from "lucide-react"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import StarRating from "./StarRating"
 import {
   Menubar,
-  MenubarCheckboxItem,
-  MenubarContent,
-  MenubarItem,
   MenubarMenu,
-  MenubarRadioGroup,
-  MenubarRadioItem,
-  MenubarSeparator,
-  MenubarShortcut,
-  MenubarSub,
-  MenubarSubContent,
-  MenubarSubTrigger,
   MenubarTrigger,
 } from "@/components/ui/menubar"
 import Image from "next/image"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import Link from "next/link"
+import { useSession } from "next-auth/react"
 
-const PartnerMobile = ({ business, perks }) => {
+const PartnerMobile = ({ business, perks, status }) => {
   const [currentPage, setCurrentPage] = useState(1)
   const [menu, setMenu] = useState("About")
-  const totalPages = 8 // Assuming 8 pages as shown in the image
+  const { data:session } = useSession()
+  const [buttonState, setButtonState] = useState({
+    text: 'Send Partner Request',
+    disabled: false
+  });
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY
-  const handlePrevPage = () => {
-    setCurrentPage((prev) => Math.max(prev - 1, 1))
+  const mapUri = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=place_id:${business.placeId}`
+
+  useEffect(()=>{
+    updateButtonState();
+  },[])
+
+  const updateButtonState = async () => {
+    try {
+      
+      switch(status) {
+        case 'PENDING':
+          setButtonState({ text: 'Request Pending', disabled: true });
+          break;
+        case 'ACCEPTED':
+          setButtonState({ text: 'Already Partners', disabled: true });
+          break;
+        case 'REJECTED':
+          setButtonState({ text: 'Request Again', disabled: false });
+          break;
+        case null:
+          setButtonState({ text: 'Lets Partner', disabled: false });
+          break;
+        default:
+          console.log('Unexpected status:', status);
+          setButtonState({ text: 'Lets Partner', disabled: false });
+      }
+    } catch (error) {
+      console.error('Error updating button state:', error);
+      setButtonState({ text: 'Error', disabled: true });
+    }
+  };
+
+  const handleNotification = async () => {
+    try {
+      const res = await axios.post('/api/notifications', {
+        senderBusinessId: session?.user?.businessId,
+        receiverBusinessId: business._id,
+        type: 'partner_request',
+        message: `I would like to partner with your business, ${business.name}`
+      })
+      setButtonState({ text: 'Request Pending', disabled: true });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  const handleNextPage = () => {
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-  }
-  const mapUri = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=place_id:${business.placeId}`
   return (
     <div className='w-full h-full flex md:hidden gap-2 flex-col relative bg-white'>
         <div className='absolute top-6 left-4'>
@@ -114,7 +147,7 @@ const PartnerMobile = ({ business, perks }) => {
           </div>
         </div>
       )}
-      <Button className='max-w-sm w-full mx-auto'>Lets Partner</Button>
+      <Button className='max-w-sm w-full mx-auto'  disabled={buttonState.disabled} onClick={handleNotification}>{buttonState.text}</Button>
     </div>
   )
 }

@@ -30,6 +30,5 @@
           secure: true
         }
       },
-      // ... other cookie configurations
     },
   }

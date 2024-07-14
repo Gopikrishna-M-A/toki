@@ -122,6 +122,9 @@ const Navbar = ({ children }) => {
             <NavItem href='/dashboard' icon={BarChart2}>
               Profile
             </NavItem>
+            <NavItem href='/dashboard/notifications' icon={Bell}>
+            Notification
+          </NavItem>
           </div>
           <div className='flex flex-col gap-2  px-5 py-10'>
             <div className='flex items-center w-ful gap-2'>
