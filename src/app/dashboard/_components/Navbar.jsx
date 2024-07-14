@@ -1,7 +1,7 @@
 "use client"
 import React from "react"
 import Link from "next/link"
-import { Compass, BarChart2, Gift, LogOut, Menu } from "lucide-react"
+import { Compass, BarChart2, Gift, LogOut, Menu, Smile, AppWindow, Bell } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useAuth } from "@/hooks/useAuth"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -18,6 +18,9 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
+import { Separator } from "@/components/ui/separator"
+
+import Image from "next/image"
 
 const NavItem = ({ href, icon: Icon, children }) => {
   const pathname = usePathname()
@@ -38,7 +41,6 @@ const NavItem = ({ href, icon: Icon, children }) => {
     </Link>
   )
 }
-
 const Navbar = ({ children }) => {
   const { user } = useAuth()
   const [open, setOpen] = React.useState(false)
@@ -48,21 +50,33 @@ const Navbar = ({ children }) => {
   return (
     <div className='flex h-screen bg-gray-100 w-full'>
       <nav className='w-64 bg-white border-r  flex-col hidden md:flex'>
-        <div className='p-6'>
+        <div className='px-6 py-4'>
           <Link href='/dashboard' className='text-2xl font-bold'>
-            TOKI
+          <div className='flex md:justify-start md:items-center gap-4 px-5 md:px-0'>
+          <Image
+            src='/images/home/vector-black.png'
+            width={23}
+            height={23}
+            alt='logo'
+          />
+          <h1 className='text-2xl font-bold tracking-[.35em]'>TOKI</h1>
+        </div>
           </Link>
         </div>
+        <Separator/>
         <div className='mt-6 flex gap-1 flex-col flex-grow px-5'>
-          <p className='px-3 text-sm font-medium text-gray-500 mb-2'>Menu</p>
+          <p className='px-3 text-sm font-medium text-gray-400 mb-2'>Menu</p>
           <NavItem href='/dashboard/discover' icon={Compass}>
             Discover
           </NavItem>
-          <NavItem href='/dashboard/manage-perks' icon={Gift}>
+          <NavItem href='/dashboard/manage-perks' icon={AppWindow}>
             Manage perks
           </NavItem>
-          <NavItem href='/dashboard' icon={BarChart2}>
+          <NavItem href='/dashboard' icon={Smile}>
             Profile
+          </NavItem>
+          <NavItem href='/dashboard/notifications' icon={Bell}>
+            Notification
           </NavItem>
         </div>
         <div className='py-4 px-2 mt-auto border-t'>

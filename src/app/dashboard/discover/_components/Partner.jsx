@@ -2,22 +2,73 @@
 import { Button } from "@/components/ui/button"
 import PerkCard from "./PerkCard"
 import { ChevronLeft, ChevronRight, StarIcon } from "lucide-react"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import StarRating from "./StarRating"
 import Link from "next/link"
+import axios from "axios"
+import { useSession } from "next-auth/react"
 
-const Partner = ({ business, perks }) => {
+const Partner = ({ business, perks, status }) => {
   const [currentPage, setCurrentPage] = useState(1)
-  const totalPages = 8 // Assuming 8 pages as shown in the image
+  const { data:session } = useSession()
+  const [buttonState, setButtonState] = useState({
+    text: 'Send Partner Request',
+    disabled: false
+  });
+  const totalPages = 8 
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY
+  const mapUri = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=place_id:${business.placeId}`;
   const handlePrevPage = () => {
     setCurrentPage((prev) => Math.max(prev - 1, 1))
   }
-
   const handleNextPage = () => {
     setCurrentPage((prev) => Math.min(prev + 1, totalPages))
   }
-  const mapUri = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=place_id:${business.placeId}`;
+
+  useEffect(()=>{
+    updateButtonState();
+  },[])
+
+  const updateButtonState = async () => {
+    try {
+      
+      switch(status) {
+        case 'PENDING':
+          setButtonState({ text: 'Request Pending', disabled: true });
+          break;
+        case 'ACCEPTED':
+          setButtonState({ text: 'Already Partners', disabled: true });
+          break;
+        case 'REJECTED':
+          setButtonState({ text: 'Request Again', disabled: false });
+          break;
+        case null:
+          setButtonState({ text: 'Lets Partner', disabled: false });
+          break;
+        default:
+          console.log('Unexpected status:', status);
+          setButtonState({ text: 'Lets Partner', disabled: false });
+      }
+    } catch (error) {
+      console.error('Error updating button state:', error);
+      setButtonState({ text: 'Error', disabled: true });
+    }
+  };
+
+  const handleNotification = async () => {
+    try {
+      const res = await axios.post('/api/notifications', {
+        senderBusinessId: session?.user?.businessId,
+        receiverBusinessId: business._id,
+        type: 'partner_request',
+        message: `I would like to partner with your business, ${business.name}`
+      })
+      setButtonState({ text: 'Request Pending', disabled: true });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <div className='w-full h-full hidden md:flex gap-7 flex-col'>
       <div>
@@ -27,7 +78,7 @@ const Partner = ({ business, perks }) => {
             <ChevronLeft className='mr-2 h-4 w-4' /> {business.name}
           </Button>
           </Link>
-          <Button>Lets Partner</Button>
+          <Button  disabled={buttonState.disabled} onClick={handleNotification}>{buttonState.text}</Button>
         </div>
       </div>
       <div className='grid grid-cols-5 w-full h-full gap-4'>

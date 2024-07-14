@@ -92,7 +92,7 @@ const Form = () => {
             "Content-Type": "application/json",
             "X-Goog-Api-Key": apiKey,
             "X-Goog-FieldMask":
-              "id,displayName,formattedAddress,iconBackgroundColor,nationalPhoneNumber,rating,userRatingCount,websiteUri,attributions,location,types",
+              "id,displayName,formattedAddress,iconBackgroundColor,nationalPhoneNumber,rating,userRatingCount,websiteUri,attributions,location,types,photos",
           },
         }
       )
@@ -136,6 +136,7 @@ const Form = () => {
       longitude: business?.location?.longitude,
       phone: business?.nationalPhoneNumber,
       placeId: business?.id,
+      photos:business.photos,
       website: business?.websiteUri,
       rating: business?.rating,
       reviewCount: business?.userRatingCount,

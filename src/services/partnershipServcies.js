@@ -12,28 +12,47 @@ export async function getPartnership(partnershipId) {
 
   return partnership ? JSON.parse(JSON.stringify(partnership)) : null;
 }
-
 export async function createPartnership(partnershipData) {
   await dbConnect();
-
   const newPartnership = new Partnership(partnershipData);
   const savedPartnership = await newPartnership.save();
+
+  // Update both businesses' partner lists
+  await Business.findByIdAndUpdate(partnershipData.businessId1, {
+    $push: { partners: { partnerId: partnershipData.businessId2, status: savedPartnership.status } }
+  });
+  await Business.findByIdAndUpdate(partnershipData.businessId2, {
+    $push: { partners: { partnerId: partnershipData.businessId1, status: savedPartnership.status } }
+  });
 
   return JSON.parse(JSON.stringify(savedPartnership));
 }
 
-export async function updatePartnershipStatus(partnershipId, status) {
+export async function updatePartnershipStatus(partnershipId, newStatus) {
   await dbConnect();
-
   const updatedPartnership = await Partnership.findByIdAndUpdate(
     partnershipId,
-    { $set: { status } },
+    { 
+      $set: { status: newStatus },
+      $push: { statusHistory: { status: newStatus } }
+    },
     { new: true, runValidators: true, lean: true }
   );
 
+  if (updatedPartnership) {
+    // Update status in both businesses' partner lists
+    await Business.updateOne(
+      { _id: updatedPartnership.businessId1, 'partners.partnerId': updatedPartnership.businessId2 },
+      { $set: { 'partners.$.status': newStatus } }
+    );
+    await Business.updateOne(
+      { _id: updatedPartnership.businessId2, 'partners.partnerId': updatedPartnership.businessId1 },
+      { $set: { 'partners.$.status': newStatus } }
+    );
+  }
+
   return updatedPartnership ? JSON.parse(JSON.stringify(updatedPartnership)) : null;
 }
-
 export async function deletePartnership(partnershipId) {
   await dbConnect();
 

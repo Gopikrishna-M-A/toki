@@ -22,20 +22,4 @@ export async function POST(request) {
   }
 }
 
-// export async function PATCH(request) {
-//   const session = await getServerSession(authOptions)
-//   if (!session) {
-//     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-//   }
-//   const userData = await request.json()
-//   try {
-//     const user = await updateUser(session.user.id,userData)
-//     return NextResponse.json( user )
-//   } catch (error) {
-//     console.error("Failed to update user:", error)
-//     return NextResponse.json(
-//       { error: "Failed to update user" },
-//       { status: 500 }
-//     )
-//   }
-// }
+

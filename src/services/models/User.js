@@ -6,6 +6,7 @@ const UserSchema = new mongoose.Schema(
     email: { type: String, unique: true },
     image: String,
     emailVerified: Date,
+    businessId: { type: mongoose.Schema.Types.ObjectId, ref: 'Business' }
   },
   { timestamps: true }
 )

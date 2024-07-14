@@ -1,5 +1,6 @@
 import dbConnect from './db';
 import Business from './models/Business';
+import User from './models/User';
 
 export async function getBusiness(businessId) {
   await dbConnect();
@@ -22,7 +23,7 @@ export async function createBusiness(businessData){
 
   const newBusiness = new Business(businessData);
   const savedBusiness = await newBusiness.save();
-
+  await User.findByIdAndUpdate(savedBusiness.ownerId, { businessId: savedBusiness._id });
   return JSON.parse(JSON.stringify(savedBusiness));
 }
 
@@ -65,4 +66,24 @@ export async function searchBusinesses(query) {
     ]
   }).lean()
   return JSON.parse(JSON.stringify(businesses));
+}
+
+export async function updateBusinessPartner(businessId, partnerId, updates) {
+  await dbConnect();
+  const updatedBusiness = await Business.findOneAndUpdate(
+    { _id: businessId, 'partners.partnerId': partnerId },
+    { $set: { 'partners.$': updates } },
+    { new: true, runValidators: true, lean: true }
+  );
+  return updatedBusiness ? JSON.parse(JSON.stringify(updatedBusiness)) : null;
+}
+
+export async function removeBusinessPartner(businessId, partnerId) {
+  await dbConnect();
+  const updatedBusiness = await Business.findByIdAndUpdate(
+    businessId,
+    { $pull: { partners: { partnerId: partnerId } } },
+    { new: true, runValidators: true, lean: true }
+  );
+  return updatedBusiness ? JSON.parse(JSON.stringify(updatedBusiness)) : null;
 }

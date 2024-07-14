@@ -13,6 +13,18 @@ const businessSchema = new mongoose.Schema(
     rating: { type: Number, min: 0, max: 5 },
     reviewCount: { type: Number, default: 0 },
     images: [String],
+    photos: [{
+      name: String,
+      widthPx: Number,
+      heightPx:Number,
+      authorAttributions:[
+        {
+          displayName:String,
+          uri:String,
+          photoUri:String
+        }
+      ]
+    }],
     logo:String,
     placeId:String,
     ownerId: {
@@ -20,6 +32,10 @@ const businessSchema = new mongoose.Schema(
       unique: true,
       ref: "User",
     },
+    partners: [{
+      partnerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Business' },
+      status: { type: String, enum: ['pending', 'active', 'rejected', 'paused'] }
+    }]
   },
   { timestamps: true }
 )

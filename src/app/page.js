@@ -9,8 +9,6 @@ import { getBusinessByOwner } from "@/services/businessServices";
 const page = async () => {
   const session = await getServerSession(authOptions)
   const business = await getBusinessByOwner(session?.user?.id)
-  console.log("business",business);
-  console.log("session",session);
   if (session?.user) {
     if(business){
       redirect('/dashboard/discover')
@@ -18,8 +16,9 @@ const page = async () => {
       redirect('/registration')
     }
   }
+
   return (
-    <div>
+    <div className="bg-black">
       <LandingPage />
     </div>
   )
