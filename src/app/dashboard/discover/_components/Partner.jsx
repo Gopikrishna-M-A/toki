@@ -65,17 +65,17 @@ const Partner = ({ business, perks, status }) => {
   }
 
   const handleNotification = async () => {
-    // try {
-    //   const res = await axios.post('/api/notifications', {
-    //     senderBusinessId: session?.user?.businessId,
-    //     receiverBusinessId: business._id,
-    //     type: 'partner_request',
-    //     message: `I would like to partner with your business, ${business.name}`
-    //   })
-    //   setButtonState({ text: 'Request Pending', disabled: true });
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    try {
+      const res = await axios.post('/api/notifications', {
+        senderBusinessId: session?.user?.businessId,
+        receiverBusinessId: business._id,
+        type: 'partner_request',
+        message: `I would like to partner with your business, ${business.name}`
+      })
+      setButtonState({ text: 'Request Pending', disabled: true });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (

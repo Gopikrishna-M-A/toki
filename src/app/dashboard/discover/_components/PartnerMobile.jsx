@@ -19,6 +19,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
+import axios from "axios"
 
 const PartnerMobile = ({ business, perks, status }) => {
   const [currentPage, setCurrentPage] = useState(1)
@@ -61,17 +62,17 @@ const PartnerMobile = ({ business, perks, status }) => {
   }
 
   const handleNotification = async () => {
-    // try {
-    //   const res = await axios.post('/api/notifications', {
-    //     senderBusinessId: session?.user?.businessId,
-    //     receiverBusinessId: business._id,
-    //     type: 'partner_request',
-    //     message: `I would like to partner with your business, ${business.name}`
-    //   })
-    //   setButtonState({ text: 'Request Pending', disabled: true });
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    try {
+      const res = await axios.post('/api/notifications', {
+        senderBusinessId: session?.user?.businessId,
+        receiverBusinessId: business._id,
+        type: 'partner_request',
+        message: `I would like to partner with your business, ${business.name}`
+      })
+      setButtonState({ text: 'Request Pending', disabled: true });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -153,10 +154,10 @@ const PartnerMobile = ({ business, perks, status }) => {
           </div>
         </div>
       )}
-
+   
       <Drawer>
         <DrawerTrigger asChild>
-          <Button
+        <Button
             className='max-w-sm w-full mx-auto'
             disabled={buttonState.disabled}
             onClick={handleNotification}>
