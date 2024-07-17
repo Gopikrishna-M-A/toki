@@ -1,5 +1,6 @@
 import dbConnect from './db';
 import Perk from './models/Perk';
+import { incrementPerkClicks } from './analyticsServices';
 
 export async function createPerk(perkData) {
   await dbConnect();
@@ -10,10 +11,18 @@ export async function createPerk(perkData) {
   return JSON.parse(JSON.stringify(savedPerk));
 }
 
+export async function getAllPerks() {
+  await dbConnect();
+
+  const Perks = await Perk.find().populate('businessId')
+
+  return JSON.parse(JSON.stringify(Perks));
+}
+
 export async function getPerksByBusinessId(businessId) {
   await dbConnect();
 
-  const perks = await Perk.find({ businessId }).populate('businessId').lean()
+  const perks = await Perk.find({ businessId }).populate('businessId').lean();
 
   return JSON.parse(JSON.stringify(perks));
 }
@@ -22,6 +31,10 @@ export async function getPerkById(perkId) {
   await dbConnect();
 
   const perk = await Perk.findById(perkId).lean();
+
+  if (perk) {
+    await incrementPerkClicks(perkId, perk.businessId);
+  }
 
   return perk ? JSON.parse(JSON.stringify(perk)) : null;
 }
