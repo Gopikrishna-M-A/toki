@@ -3,58 +3,62 @@ import { Button } from "@/components/ui/button"
 import { Calendar, Loader2 } from "lucide-react"
 import convertDate from "@/lib/dateConverter"
 import axios from "axios"
-import confetti from "canvas-confetti";
+import confetti from "canvas-confetti"
+import { signIn, useSession } from "next-auth/react"
 
 const PerkCard = ({ perk, redeems }) => {
   const validUntil = new Date(perk.validUntil)
   const [userRedeemedPerks, setUserRedeemedPerks] = useState(redeems)
   const [loading, setLoading] = useState(null)
-
-
-
+  const { data: session } = useSession()
 
   const handleRedeem = async () => {
-    setLoading(true)
-    const end = Date.now() + 3 * 1000; // 3 seconds
-    const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
-    const frame = () => {
-      if (Date.now() > end) return;
-  
-      confetti({
-        particleCount: 2,
-        angle: 60,
-        spread: 55,
-        startVelocity: 60,
-        origin: { x: 0, y: 0.5 },
-        colors: colors,
-      });
-      confetti({
-        particleCount: 2,
-        angle: 120,
-        spread: 55,
-        startVelocity: 60,
-        origin: { x: 1, y: 0.5 },
-        colors: colors,
-      });
-  
-      requestAnimationFrame(frame);
-    };
-  frame();
-
-    try {
-      await axios
-        .post("/api/redeem", {
-          perkId: perk._id,
-          businessId: perk.businessId,
-        })
-        .then((response) => {
-          setUserRedeemedPerks((prev) => [...prev, perk._id])
-        })
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setLoading(false)
+    if(session?.user){
+        setLoading(true)
+        const end = Date.now() + 3 * 1000 // 3 seconds
+        const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"]
+        const frame = () => {
+          if (Date.now() > end) return
+    
+          confetti({
+            particleCount: 2,
+            angle: 60,
+            spread: 55,
+            startVelocity: 60,
+            origin: { x: 0, y: 0.5 },
+            colors: colors,
+          })
+          confetti({
+            particleCount: 2,
+            angle: 120,
+            spread: 55,
+            startVelocity: 60,
+            origin: { x: 1, y: 0.5 },
+            colors: colors,
+          })
+    
+          requestAnimationFrame(frame)
+        }
+        frame()
+    
+        try {
+          await axios
+            .post("/api/redeem", {
+              perkId: perk._id,
+              businessId: perk.businessId,
+            })
+            .then((response) => {
+              setUserRedeemedPerks((prev) => [...prev, perk._id])
+            })
+        } catch (error) {
+          console.error(error)
+        } finally {
+          setLoading(false)
+        }
+    }else{
+        signIn()
     }
+   
   }
 
   return (

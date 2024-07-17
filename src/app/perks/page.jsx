@@ -7,8 +7,8 @@ import { authOptions } from '../api/auth/[...nextauth]/options'
 const page = async () => {
   const session = await getServerSession(authOptions)
   const perks = await getAllPerks()
-  const userRedeemedPerks = await getRedemptionsByUserId(session.user.id)
-  const redeems = userRedeemedPerks.map((perk) => perk.perkId)
+  const userRedeemedPerks = await getRedemptionsByUserId(session?.user?.id)
+  const redeems = userRedeemedPerks.map((perk) => perk?.perkId)
   return (
     <div className='h-full bg-gray-100'>
         <Perks perks={perks} redeems={redeems}/>

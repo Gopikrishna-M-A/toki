@@ -1,5 +1,6 @@
 import dbConnect from './db';
 import Perk from './models/Perk';
+import Business from './models/Business';
 import { incrementPerkClicks } from './analyticsServices';
 
 export async function createPerk(perkData) {
