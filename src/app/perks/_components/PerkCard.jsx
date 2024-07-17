@@ -73,7 +73,7 @@ const PerkCard = ({ perk, redeems }) => {
             perk.businessId.images[0] || "/placeholder-bg.jpg"
           })`,
         }}>
-        <div className='absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent'></div>
+        <div className='absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent'></div>
         <div className='w-full h-full flex items-center justify-center bg-black bg-opacity-40'>
           <h1 className='text-3xl font-bold text-center text-white'>
             {perk.title}
